@@ -18,7 +18,7 @@ public class EntityController {
 
     private final EntityRepository entityRepository;
 
-    @GetMapping(path = "/entity/{id}")
+    @GetMapping(path = "/case1/{id}")
     private Mono<Entity> get(@PathVariable String id) {
         return Mono.just(id)
                 .doOnNext(v -> log.info("Request received"))
@@ -32,6 +32,20 @@ public class EntityController {
                                 .build())
                         .flatMap(entityRepository::save)
                         .doOnNext(v -> log.info("Created entity"))))
+                .doOnNext(v -> log.info("Request processed"));
+    }
+
+
+    @GetMapping(path = "/case2/{id}")
+    private Mono<Entity> get2(@PathVariable String id) {
+        return Mono.just(id)
+                .doOnNext(v -> log.info("Request received"))
+                .doOnNext(v -> log.info("Creating entity"))
+                .map(v -> Entity.builder()
+                        .id(v)
+                        .build())
+                .flatMap(entityRepository::save)
+                .doOnNext(v -> log.info("Created entity"))
                 .doOnNext(v -> log.info("Request processed"));
     }
 }
